@@ -1,8 +1,12 @@
 import tkinter as tk
+import tkinter.tix as tx
 from PIL import Image, ImageTk
+
 
 # tkinter apps needs to have a root window class
 # for root wm (window manager) methods may be used to setup app window appearance
+
+version = 'modulo v.0.01'
 
 colors = {
     'bg': '#22313F',
@@ -11,17 +15,21 @@ colors = {
     'button_hoover': '#67809F',
     'button_activebg': '#34495E',
     'button_activefg': '#67809F',
-    'button_fg': '#19B5FE'
+    'button_fg': '#19B5FE',
+    'infobox_fb': '#95A5A6',
+    'infobox_afb': '#DADFE1',
+    'infobox_abg': '#2C3E50'
 }
 
 fonts = {
     'menu_normal': ('roboto.ttf', 10),
+    'menu_medium': ('roboto.ttf', 12),
     'menu_large': ('roboto.ttf', 14),
     'infobox_normal': ('roboto.ttf', 8)
 }
 
 # App window setup
-root = tk.Tk()
+root = tx.Tk()
 root.wm_minsize(width=400, height=300)
 root.configure(bg=colors['bg'])
 root.geometry('800x600')
@@ -54,6 +62,16 @@ class Hoover:
         """Cast the function using:
         widget.bind("<Leave>", lambda x: image_on_mouse_leave(widget, image_color))"""
         widget.config(image=image)
+
+    @staticmethod
+    def popup_on_mouse_enter(widget, text_str: str):
+        """Function adds pop-up tooltip message"""
+        tip = tx.Balloon(root)
+        tip.message.configure(fg=colors['infobox_fb'])
+        for sub in tip.subwidgets_all():
+            sub.configure(bg=colors['bg'])
+        tip.label.forget()
+        tip.bind_widget(widget, balloonmsg=text_str)
 
 
 # Application setup - inside app window
@@ -93,76 +111,266 @@ class MainWindow:
         self.left_menu_widgets()
         self.top_menu_widgets()
 
-    # Class methods
+    # Self methods
 
     def main_frame_widgets(self):
         pass
 
     def infobox_widgets(self):
-        label_version = tk.Label(self.infobox, text='Infobox v.0.001',
-                                 fg='#19B5FE', bg=colors['bg'],
-                                 font=fonts['infobox_normal'])
-        label_version.pack(side='left')
+        # BUTTON 1 - VERSION
+        button_1 = tk.Button(self.infobox)
+
+        button_1.config(bd=0,
+                        bg=colors['bg'],
+                        activebackground=colors['button_hoover'],
+                        activeforeground=colors['infobox_afb'],
+                        text=version,
+                        fg=colors['infobox_fb'],
+                        font=fonts['infobox_normal'],
+                        relief='flat',
+                        command=check_button)
+
+        # Booton 1 hoover actions
+        def event_enter_b1():
+            Hoover.bg_on_mouse_enter(button_1, colors['infobox_abg'])
+
+        def event_leave_b1():
+            Hoover.bg_on_mouse_leave(button_1, colors['bg'])
+
+        button_1.bind("<Enter>", lambda x: event_enter_b1())
+        button_1.bind("<Leave>", lambda x: event_leave_b1())
+
+        button_1.pack(side='left', padx=6, pady=1)
+
+        # BUTTON 2 - STATUS
+        button_2 = tk.Button(self.infobox)
+
+        button_2.config(bd=0,
+                        bg=colors['bg'],
+                        activebackground=colors['button_hoover'],
+                        activeforeground=colors['infobox_afb'],
+                        text='Status: '+'OFFLINE',
+                        fg=colors['infobox_fb'],
+                        font=fonts['infobox_normal'],
+                        relief='flat',
+                        command=check_button)
+
+        # Booton 1 hoover actions
+        def event_enter_b2():
+            Hoover.bg_on_mouse_enter(button_2, colors['infobox_abg'])
+
+        def event_leave_b2():
+            Hoover.bg_on_mouse_leave(button_2, colors['bg'])
+
+        button_2.bind("<Enter>", lambda x: event_enter_b2())
+        button_2.bind("<Leave>", lambda x: event_leave_b2())
+
+        button_2.pack(side='right', padx=6, pady=1)
 
     def left_menu_widgets(self):
-        # Button Search
+        # BUTTON 1 - SEARCH
         button_1 = tk.Button(self.left_menu)
 
-        button_1_load = Image.open('assets/search.png')
+        button_1_load = Image.open('assets/check_50.png')
         root.button_1_img = ImageTk.PhotoImage(button_1_load)
 
-        button_1_hoov_load = Image.open('assets/search_hoover.png')
-        root.button_1_hoov_img = ImageTk.PhotoImage(button_1_hoov_load)
+        button_1_hov_load = Image.open('assets/check_100.png')
+        root.button_1_hov_img = ImageTk.PhotoImage(button_1_hov_load)
 
-        button_1.config(bd=1,
+        button_1.config(bd=0,
                         bg=colors['menu_bg'],
                         activebackground=colors['button_activebg'],
                         image=root.button_1_img,
                         relief='flat',
                         command=check_button)
 
-        button_1.bind("<Enter>", lambda x: Hoover.image_on_mouse_enter(
-            button_1, root.button_1_hoov_img))
-        button_1.bind("<Leave>", lambda x: Hoover.image_on_mouse_leave(
-            button_1, root.button_1_img))
+        # Button 1 hoover actions
+        button_1_tipmsg = 'Structure members'
+        Hoover.popup_on_mouse_enter(button_1, button_1_tipmsg)
+
+        def event_enter_b1():
+            Hoover.image_on_mouse_enter(button_1, root.button_1_hov_img)
+
+        def event_leave_b1():
+            Hoover.image_on_mouse_leave(button_1, root.button_1_img)
+
+        button_1.bind("<Enter>", lambda x: event_enter_b1())
+        button_1.bind("<Leave>", lambda x: event_leave_b1())
 
         button_1.pack(side='top', pady=4, padx=4)
 
-        # Button Profile
+        # BUTTON 2 - PROFILE
         button_2 = tk.Button(self.left_menu)
 
-        button_2_load = Image.open('assets/hprof.png')
+        button_2_load = Image.open('assets/result_50.png')
         root.button_2_img = ImageTk.PhotoImage(button_2_load)
 
-        button_2_hoov_load = Image.open('assets/search_hoover.png')
-        root.button_2_hoov_img = ImageTk.PhotoImage(button_2_hoov_load)
+        button_2_hov_load = Image.open('assets/result_100.png')
+        root.button_2_hov_img = ImageTk.PhotoImage(button_2_hov_load)
 
-        button_2.config(bd=1,
+        button_2.config(bd=0,
                         bg=colors['menu_bg'],
                         activebackground=colors['button_activebg'],
                         image=root.button_2_img,
                         relief='flat',
                         command=check_button)
 
-        button_2.bind("<Enter>", lambda x: Hoover.bg_on_mouse_enter(
-            button_2, colors['button_hoover']))
-        button_2.bind("<Leave>", lambda x: Hoover.bg_on_mouse_leave(
-            button_2, colors['menu_bg']))
+        # Button 2 hoover actions
+        button_2_tipmsg = 'Analysis'
+        Hoover.popup_on_mouse_enter(button_2, button_2_tipmsg)
+
+        def event_enter_b2():
+            Hoover.image_on_mouse_enter(button_2, root.button_2_hov_img)
+
+        def event_leave_b2():
+            Hoover.image_on_mouse_leave(button_2, root.button_2_img)
+
+        button_2.bind("<Enter>", lambda x: event_enter_b2())
+        button_2.bind("<Leave>", lambda x: event_leave_b2())
 
         button_2.pack(side='top', pady=4, padx=4)
 
-    def top_menu_widgets(self):
-        button_1 = tk.Button(self.top_menu)
-        button_1.config(text="TOP",
-                        bd=1,
+        # BUTTON 3 - GRAPH
+        button_3 = tk.Button(self.left_menu)
+
+        button_3_load = Image.open('assets/graph_50.png')
+        root.button_3_img = ImageTk.PhotoImage(button_3_load)
+
+        button_3_hov_load = Image.open('assets/graph_100.png')
+        root.button_3_hov_img = ImageTk.PhotoImage(button_3_hov_load)
+
+        button_3.config(bd=0,
                         bg=colors['menu_bg'],
-                        font=fonts['menu_normal'],
-                        fg=colors['button_fg'],
                         activebackground=colors['button_activebg'],
-                        activeforeground='red',
+                        image=root.button_3_img,
                         relief='flat',
                         command=check_button)
-        button_1.pack(side='left')
+
+        # Button 3 hoover actions
+        button_3_tipmsg = 'Result'
+        Hoover.popup_on_mouse_enter(button_3, button_3_tipmsg)
+
+        def event_enter_b3():
+            Hoover.image_on_mouse_enter(button_3, root.button_3_hov_img)
+
+        def event_leave_b3():
+            Hoover.image_on_mouse_leave(button_3, root.button_3_img)
+
+        button_3.bind("<Enter>", lambda x: event_enter_b3())
+        button_3.bind("<Leave>", lambda x: event_leave_b3())
+
+        button_3.pack(side='top', pady=4, padx=4)
+
+        # BUTTON 4 - SHIP
+        button_4 = tk.Button(self.left_menu)
+
+        button_4_load = Image.open('assets/ship_50.png')
+        root.button_4_img = ImageTk.PhotoImage(button_4_load)
+
+        button_4_hov_load = Image.open('assets/ship_100.png')
+        root.button_4_hov_img = ImageTk.PhotoImage(button_4_hov_load)
+
+        button_4.config(bd=0,
+                        bg=colors['menu_bg'],
+                        activebackground=colors['button_activebg'],
+                        image=root.button_4_img,
+                        relief='flat',
+                        command=check_button)
+
+        # Button 4 hoover actions
+        button_4_tipmsg = 'Class methods'
+        Hoover.popup_on_mouse_enter(button_4, button_4_tipmsg)
+
+        def event_enter_b4():
+            Hoover.image_on_mouse_enter(button_4, root.button_4_hov_img)
+
+        def event_leave_b4():
+            Hoover.image_on_mouse_leave(button_4, root.button_4_img)
+
+        button_4.bind("<Enter>", lambda x: event_enter_b4())
+        button_4.bind("<Leave>", lambda x: event_leave_b4())
+
+        button_4.pack(side='top', pady=4, padx=4)
+
+        # BUTTON 0 - BOTTOM OPTIONS
+        button_0 = tk.Button(self.left_menu)
+
+        button_0_load = Image.open('assets/options_50.png')
+        root.button_0_img = ImageTk.PhotoImage(button_0_load)
+
+        button_0_hov_load = Image.open('assets/options_100.png')
+        root.button_0_hov_img = ImageTk.PhotoImage(button_0_hov_load)
+
+        button_0.config(bd=0,
+                        bg=colors['menu_bg'],
+                        activebackground=colors['button_activebg'],
+                        image=root.button_0_img,
+                        relief='flat',
+                        command=check_button)
+
+        # Button 0 hoover actions
+        button_0_tipmsg = 'Settings'
+        Hoover.popup_on_mouse_enter(button_0, button_0_tipmsg)
+
+        def event_enter_b0():
+            Hoover.image_on_mouse_enter(button_0, root.button_0_hov_img)
+
+        def event_leave_b0():
+            Hoover.image_on_mouse_leave(button_0, root.button_0_img)
+
+        button_0.bind("<Enter>", lambda x: event_enter_b0())
+        button_0.bind("<Leave>", lambda x: event_leave_b0())
+
+        button_0.pack(side='bottom', pady=4, padx=4)
+
+    def top_menu_widgets(self):
+        # BUTTON 1
+        button_1 = tk.Button(self.top_menu)
+        button_1.config(bd=0,
+                        bg=colors['working_bg'],
+                        activebackground=colors['button_hoover'],
+                        activeforeground=colors['infobox_afb'],
+                        text='Profile library',
+                        fg=colors['infobox_fb'],
+                        font=fonts['menu_normal'],
+                        relief='flat',
+                        command=check_button)
+
+        # Booton 1 hoover actions
+        def event_enter_b1():
+            Hoover.bg_on_mouse_enter(button_1, colors['button_hoover'])
+
+        def event_leave_b1():
+            Hoover.bg_on_mouse_leave(button_1, colors['working_bg'])
+
+        button_1.bind("<Enter>", lambda x: event_enter_b1())
+        button_1.bind("<Leave>", lambda x: event_leave_b1())
+
+        button_1.pack(side='left', padx=4)
+
+        # BUTTON 2
+        button_2 = tk.Button(self.top_menu)
+        button_2.config(bd=0,
+                        bg=colors['working_bg'],
+                        activebackground=colors['button_hoover'],
+                        activeforeground=colors['infobox_afb'],
+                        text='Material library',
+                        fg=colors['infobox_fb'],
+                        font=fonts['menu_normal'],
+                        relief='flat',
+                        command=check_button)
+
+        # Booton 2 hoover actions
+        def event_enter_b2():
+            Hoover.bg_on_mouse_enter(button_2, colors['button_hoover'])
+
+        def event_leave_b2():
+            Hoover.bg_on_mouse_leave(button_2, colors['working_bg'])
+
+        button_2.bind("<Enter>", lambda x: event_enter_b2())
+        button_2.bind("<Leave>", lambda x: event_leave_b2())
+
+        button_2.pack(side='left', padx=4)
 
 
 # Functions
