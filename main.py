@@ -1,7 +1,8 @@
 import tkinter as tk
 import tkinter.tix as tx
 from PIL import Image, ImageTk
-
+import os
+import sys
 
 # tkinter apps needs to have a root window class
 # for root wm (window manager) methods may be used to setup app window appearance
@@ -22,9 +23,9 @@ colors = {
 }
 
 fonts = {
-    'menu_normal': ('roboto.ttf', 10),
-    'menu_medium': ('roboto.ttf', 12),
-    'menu_large': ('roboto.ttf', 14),
+    'menu_normal': ('roboto.ttf', 9),
+    'menu_medium': ('roboto.ttf', 10),
+    'menu_large': ('roboto.ttf', 12),
     'infobox_normal': ('roboto.ttf', 8)
 }
 
@@ -34,6 +35,7 @@ root.wm_minsize(width=400, height=300)
 root.configure(bg=colors['bg'])
 root.geometry('800x600')
 root.title('inDust modulo')
+root.overrideredirect(0)
 # root.wm_resizable(False, False)
 root.iconbitmap('assets/favicon.ico')
 
@@ -82,6 +84,12 @@ class MainWindow:
         self.main_window.config(bg=colors['bg'])
         self.main_window.pack(side='top', fill='both', expand=True)
 
+        # Top Bar
+        self.top_bar = tk.Frame(self.main_window)
+        self.top_bar.config(bg=colors['bg'],
+                            height=24)
+        self.top_bar.pack(side='top', fill='x', expand=False)
+
         # Bottom Infobox Frame
         self.infobox = tk.Frame(self.main_window)
         self.infobox.config(bg=colors['bg'],
@@ -94,27 +102,154 @@ class MainWindow:
                               width=38)
         self.left_menu.pack(side='left', fill='y', expand=False)
 
-        # Top Menu Frame
-        self.top_menu = tk.Frame(self.main_window)
-        self.top_menu.config(bg=colors['menu_bg'],
-                             width=38)
-        self.top_menu.pack(side='top', fill='x', expand=False)
-
         # Working Frame
         self.working = tk.Frame(self.main_window)
         self.working.config(bg=colors['working_bg'])
         self.working.pack(side='top', fill='both', expand=True)
 
+        # Working Top Menu Frame
+        self.working_top_menu = tk.Frame(self.working)
+        self.working_top_menu.config(bg=colors['menu_bg'],
+                                     width=38)
+        self.working_top_menu.pack(side='top', fill='x', expand=False)
+
         # Widgets
         self.main_frame_widgets()
+        self.top_bar_widgets()
         self.infobox_widgets()
         self.left_menu_widgets()
-        self.top_menu_widgets()
+        self.working_top_menu_widgets()
 
     # Self methods
 
     def main_frame_widgets(self):
         pass
+
+    def top_bar_widgets(self):
+        # BUTTON 1 - FILE
+        button_1 = tk.Button(self.top_bar)
+
+        button_1.config(bd=0,
+                        bg=colors['bg'],
+                        activebackground=colors['button_hoover'],
+                        activeforeground=colors['infobox_afb'],
+                        text='File',
+                        fg=colors['infobox_fb'],
+                        font=fonts['menu_normal'],
+                        relief='flat',
+                        command=check_button)
+
+        # Booton 1 hoover actions
+        def event_enter_b1():
+            Hoover.bg_on_mouse_enter(button_1, colors['infobox_abg'])
+
+        def event_leave_b1():
+            Hoover.bg_on_mouse_leave(button_1, colors['bg'])
+
+        button_1.bind("<Enter>", lambda x: event_enter_b1())
+        button_1.bind("<Leave>", lambda x: event_leave_b1())
+
+        button_1.pack(side='left', padx=6, pady=1)
+
+        # BUTTON 2 - EDIT
+        button_2 = tk.Button(self.top_bar)
+
+        button_2.config(bd=0,
+                        bg=colors['bg'],
+                        activebackground=colors['button_hoover'],
+                        activeforeground=colors['infobox_afb'],
+                        text='Edit',
+                        fg=colors['infobox_fb'],
+                        font=fonts['menu_normal'],
+                        relief='flat',
+                        command=check_button)
+
+        # Booton 1 hoover actions
+        def event_enter_b2():
+            Hoover.bg_on_mouse_enter(button_2, colors['infobox_abg'])
+
+        def event_leave_b2():
+            Hoover.bg_on_mouse_leave(button_2, colors['bg'])
+
+        button_2.bind("<Enter>", lambda x: event_enter_b2())
+        button_2.bind("<Leave>", lambda x: event_leave_b2())
+
+        button_2.pack(side='left', padx=6, pady=1)
+
+        # BUTTON 3 - VIEW
+        button_3 = tk.Button(self.top_bar)
+
+        button_3.config(bd=0,
+                        bg=colors['bg'],
+                        activebackground=colors['button_hoover'],
+                        activeforeground=colors['infobox_afb'],
+                        text='View',
+                        fg=colors['infobox_fb'],
+                        font=fonts['menu_normal'],
+                        relief='flat',
+                        command=check_button)
+
+        # Booton 1 hoover actions
+        def event_enter_b3():
+            Hoover.bg_on_mouse_enter(button_3, colors['infobox_abg'])
+
+        def event_leave_b3():
+            Hoover.bg_on_mouse_leave(button_3, colors['bg'])
+
+        button_3.bind("<Enter>", lambda x: event_enter_b3())
+        button_3.bind("<Leave>", lambda x: event_leave_b3())
+
+        button_3.pack(side='left', padx=6, pady=1)
+
+        # BUTTON 4 - HELP
+        button_4 = tk.Button(self.top_bar)
+
+        button_4.config(bd=0,
+                        bg=colors['bg'],
+                        activebackground=colors['button_hoover'],
+                        activeforeground=colors['infobox_afb'],
+                        text='Help',
+                        fg=colors['infobox_fb'],
+                        font=fonts['menu_normal'],
+                        relief='flat',
+                        command=check_button)
+
+        # Booton 1 hoover actions
+        def event_enter_b4():
+            Hoover.bg_on_mouse_enter(button_4, colors['infobox_abg'])
+
+        def event_leave_b4():
+            Hoover.bg_on_mouse_leave(button_4, colors['bg'])
+
+        button_4.bind("<Enter>", lambda x: event_enter_b4())
+        button_4.bind("<Leave>", lambda x: event_leave_b4())
+
+        button_4.pack(side='left', padx=6, pady=1)
+
+        # BUTTON 0 - Exit
+        button_0 = tk.Button(self.top_bar)
+
+        button_0.config(bd=0,
+                        bg=colors['bg'],
+                        activebackground=colors['button_hoover'],
+                        activeforeground=colors['infobox_afb'],
+                        text='Exit',
+                        fg=colors['infobox_fb'],
+                        font=fonts['menu_normal'],
+                        relief='flat',
+                        command=tk._exit)
+
+        # Booton 1 hoover actions
+        def event_enter_b0():
+            Hoover.bg_on_mouse_enter(button_0, colors['infobox_abg'])
+
+        def event_leave_b0():
+            Hoover.bg_on_mouse_leave(button_0, colors['bg'])
+
+        button_0.bind("<Enter>", lambda x: event_enter_b0())
+        button_0.bind("<Leave>", lambda x: event_leave_b0())
+
+        button_0.pack(side='right', padx=6, pady=1)
 
     def infobox_widgets(self):
         # BUTTON 1 - VERSION
@@ -323,9 +458,9 @@ class MainWindow:
 
         button_0.pack(side='bottom', pady=4, padx=4)
 
-    def top_menu_widgets(self):
+    def working_top_menu_widgets(self):
         # BUTTON 1
-        button_1 = tk.Button(self.top_menu)
+        button_1 = tk.Button(self.working_top_menu)
         button_1.config(bd=0,
                         bg=colors['working_bg'],
                         activebackground=colors['button_hoover'],
@@ -349,7 +484,7 @@ class MainWindow:
         button_1.pack(side='left', padx=4)
 
         # BUTTON 2
-        button_2 = tk.Button(self.top_menu)
+        button_2 = tk.Button(self.working_top_menu)
         button_2.config(bd=0,
                         bg=colors['working_bg'],
                         activebackground=colors['button_hoover'],
