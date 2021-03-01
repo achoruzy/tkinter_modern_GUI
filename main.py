@@ -1,8 +1,6 @@
 import tkinter as tk
 import tkinter.tix as tx
 from PIL import Image, ImageTk
-import os
-import sys
 
 # tkinter apps needs to have a root window class
 # for root wm (window manager) methods may be used to setup app window appearance
@@ -33,11 +31,15 @@ fonts = {
 root = tx.Tk()
 root.wm_minsize(width=400, height=300)
 root.configure(bg=colors['bg'])
-root.geometry('800x600')
 root.title('inDust modulo')
-root.overrideredirect(0)
-# root.wm_resizable(False, False)
+# root.overrideredirect(1)
+# root.wm_attributes('-type', 'splash')
+root.wm_resizable(True, True)
 root.iconbitmap('assets/favicon.ico')
+
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+root.geometry(f'800x600+{int(screen_width/4)}+{int(screen_height/4)}')
 
 
 class Hoover:
@@ -227,29 +229,99 @@ class MainWindow:
         button_4.pack(side='left', padx=6, pady=1)
 
         # BUTTON 0 - Exit
-        button_0 = tk.Button(self.top_bar)
+        button_t0 = tk.Button(self.top_bar)
 
-        button_0.config(bd=0,
-                        bg=colors['bg'],
-                        activebackground=colors['button_hoover'],
-                        activeforeground=colors['infobox_afb'],
-                        text='Exit',
-                        fg=colors['infobox_fb'],
-                        font=fonts['menu_normal'],
-                        relief='flat',
-                        command=tk._exit)
+        button_t0_load = Image.open('assets/close_50.png')
+        root.button_t0_img = ImageTk.PhotoImage(button_t0_load)
 
-        # Booton 1 hoover actions
-        def event_enter_b0():
-            Hoover.bg_on_mouse_enter(button_0, colors['infobox_abg'])
+        button_t0_hov_load = Image.open('assets/close_100.png')
+        root.button_t0_hov_img = ImageTk.PhotoImage(button_t0_hov_load)
 
-        def event_leave_b0():
-            Hoover.bg_on_mouse_leave(button_0, colors['bg'])
+        button_t0.config(bd=0,
+                         bg=colors['bg'],
+                         activebackground=colors['button_hoover'],
+                         width=40,
+                         image=root.button_t0_img,
+                         relief='flat',
+                         command=tk._exit)
 
-        button_0.bind("<Enter>", lambda x: event_enter_b0())
-        button_0.bind("<Leave>", lambda x: event_leave_b0())
+        # Booton 0 hoover actions
+        def event_enter_bt0():
+            Hoover.bg_on_mouse_enter(button_t0, 'red')
+            Hoover.image_on_mouse_enter(button_t0, root.button_t0_hov_img)
 
-        button_0.pack(side='right', padx=6, pady=1)
+        def event_leave_bt0():
+            Hoover.bg_on_mouse_leave(button_t0, colors['bg'])
+            Hoover.image_on_mouse_leave(button_t0, root.button_t0_img)
+
+        button_t0.bind("<Enter>", lambda x: event_enter_bt0())
+        button_t0.bind("<Leave>", lambda x: event_leave_bt0())
+
+        button_t0.pack(side='right', padx=0, pady=0)
+
+        # BUTTON 00 - Maximize
+        button_t00 = tk.Button(self.top_bar)
+
+        button_t00_load = Image.open('assets/fullwin_50.png')
+        root.button_t00_img = ImageTk.PhotoImage(button_t00_load)
+
+        button_t00_hov_load = Image.open('assets/fullwin_100.png')
+        root.button_t00_hov_img = ImageTk.PhotoImage(button_t00_hov_load)
+
+        button_t00.config(bd=0,
+                          bg=colors['bg'],
+                          activebackground=colors['button_hoover'],
+                          width=40,
+                          image=root.button_t00_img,
+                          relief='flat'
+                          )
+
+        # Booton 00 hoover actions
+        def event_enter_bt00():
+            Hoover.bg_on_mouse_enter(button_t00, colors['menu_bg'])
+            Hoover.image_on_mouse_enter(button_t00, root.button_t00_hov_img)
+
+        def event_leave_bt00():
+            Hoover.bg_on_mouse_leave(button_t00, colors['bg'])
+            Hoover.image_on_mouse_leave(button_t00, root.button_t00_img)
+
+        button_t00.bind("<Enter>", lambda x: event_enter_bt00())
+        # button_t00.bind("<Clicked>", button_t00.config(
+        #     command=root.geometry(f'{screen_width}x{screen_height}+0+0')))
+        button_t00.bind("<Leave>", lambda x: event_leave_bt00())
+
+        button_t00.pack(side='right', padx=0, pady=0)
+
+        # BUTTON 000 - Minimize
+        button_t000 = tk.Button(self.top_bar)
+
+        button_t000_load = Image.open('assets/minimize_50.png')
+        root.button_t000_img = ImageTk.PhotoImage(button_t000_load)
+
+        button_t000_hov_load = Image.open('assets/minimize_100.png')
+        root.button_t000_hov_img = ImageTk.PhotoImage(button_t000_hov_load)
+
+        button_t000.config(bd=0,
+                           bg=colors['bg'],
+                           activebackground=colors['button_hoover'],
+                           width=40,
+                           image=root.button_t000_img,
+                           relief='flat',
+                           command=root.iconify)
+
+        # Booton 000 hoover actions
+        def event_enter_bt000():
+            Hoover.bg_on_mouse_enter(button_t000, colors['menu_bg'])
+            Hoover.image_on_mouse_enter(button_t000, root.button_t000_hov_img)
+
+        def event_leave_bt000():
+            Hoover.bg_on_mouse_leave(button_t000, colors['bg'])
+            Hoover.image_on_mouse_leave(button_t000, root.button_t000_img)
+
+        button_t000.bind("<Enter>", lambda x: event_enter_bt000())
+        button_t000.bind("<Leave>", lambda x: event_leave_bt000())
+
+        button_t000.pack(side='right', padx=0, pady=0)
 
     def infobox_widgets(self):
         # BUTTON 1 - VERSION
