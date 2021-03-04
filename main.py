@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 # tkinter apps needs to have a root window class
 # for root wm (window manager) methods may be used to setup app window appearance
 
-version = 'modulo v.0.01'
+version = '0.004'
 
 colors = {
     'bg': '#22313F',
@@ -76,6 +76,29 @@ class Hoover:
             sub.configure(bg=colors['bg'])
         tip.label.forget()
         tip.bind_widget(widget, balloonmsg=text_str)
+
+    @staticmethod
+    def floating_window(root, widget):
+        """ Function alows to drag windows/widgets using mouse """
+
+        def start_move(event):
+            root.x = event.x
+            root.y = event.y
+
+        def stop_move(event):
+            root.x = None
+            root.y = None
+
+        def do_move(event):
+            dx = event.x - root.x
+            dy = event.y - root.y
+            x = root.winfo_x() + dx
+            y = root.winfo_y() + dy
+            root.geometry(f"+{x}+{y}")
+
+        widget.bind("<ButtonPress-1>", start_move)
+        widget.bind("<ButtonRelease-1>", stop_move)
+        widget.bind("<B1-Motion>", do_move)
 
 
 # Application setup - inside app window
@@ -323,6 +346,22 @@ class MainWindow:
 
         button_t000.pack(side='right', padx=0, pady=0)
 
+        # -----------------
+
+        # TITLE / GRAB WINDOW
+
+        title_label = tk.Label(self.top_bar)
+        title_label.config(bg=colors['bg'],
+                           text='Modulo',
+                           fg=colors['infobox_fb'],
+                           font=fonts['menu_normal'],
+                           justify='center')
+        title_label.pack(fill='x')
+
+        Hoover.floating_window(root, title_label)
+
+        # -----------------
+
     def infobox_widgets(self):
         # BUTTON 1 - VERSION
         button_1 = tk.Button(self.infobox)
@@ -349,6 +388,23 @@ class MainWindow:
 
         button_1.pack(side='left', padx=6, pady=1)
 
+        # STATUS DOT
+
+        dot_red = Image.open('assets/dot_red.png')
+        root.dot_red = ImageTk.PhotoImage(dot_red)
+
+        status_dot = tk.Label(self.infobox)
+        status_dot.config(bd=0,
+                          bg=colors['bg'],
+                          activebackground=colors['button_hoover'],
+                          activeforeground=colors['infobox_afb'],
+                          image=root.dot_red,
+                          fg=colors['infobox_fb'],
+                          font=fonts['infobox_normal']
+                          )
+
+        status_dot.pack(side='left', padx=1, pady=1)
+
         # BUTTON 2 - STATUS
         button_2 = tk.Button(self.infobox)
 
@@ -356,7 +412,7 @@ class MainWindow:
                         bg=colors['bg'],
                         activebackground=colors['button_hoover'],
                         activeforeground=colors['infobox_afb'],
-                        text='Status: '+'OFFLINE',
+                        text='OFFLINE',
                         fg=colors['infobox_fb'],
                         font=fonts['infobox_normal'],
                         relief='flat',
@@ -372,7 +428,7 @@ class MainWindow:
         button_2.bind("<Enter>", lambda x: event_enter_b2())
         button_2.bind("<Leave>", lambda x: event_leave_b2())
 
-        button_2.pack(side='right', padx=6, pady=1)
+        button_2.pack(side='left', padx=3, pady=1)
 
     def left_menu_widgets(self):
         # BUTTON 1 - SEARCH
@@ -529,6 +585,37 @@ class MainWindow:
         button_0.bind("<Leave>", lambda x: event_leave_b0())
 
         button_0.pack(side='bottom', pady=4, padx=4)
+
+        # BUTTON 0 - USER OPTIONS
+        button_00 = tk.Button(self.left_menu)
+
+        button_00_load = Image.open('assets/user_50.png')
+        root.button_00_img = ImageTk.PhotoImage(button_00_load)
+
+        button_00_hov_load = Image.open('assets/user_100.png')
+        root.button_00_hov_img = ImageTk.PhotoImage(button_00_hov_load)
+
+        button_00.config(bd=0,
+                         bg=colors['menu_bg'],
+                         activebackground=colors['button_activebg'],
+                         image=root.button_00_img,
+                         relief='flat',
+                         command=check_button)
+
+        # Button 00 hoover actions
+        button_00_tipmsg = 'User'
+        Hoover.popup_on_mouse_enter(button_00, button_00_tipmsg)
+
+        def event_enter_b00():
+            Hoover.image_on_mouse_enter(button_00, root.button_00_hov_img)
+
+        def event_leave_b00():
+            Hoover.image_on_mouse_leave(button_00, root.button_00_img)
+
+        button_00.bind("<Enter>", lambda x: event_enter_b00())
+        button_00.bind("<Leave>", lambda x: event_leave_b00())
+
+        button_00.pack(side='bottom', pady=4, padx=4)
 
     def working_top_menu_widgets(self):
         # BUTTON 1
