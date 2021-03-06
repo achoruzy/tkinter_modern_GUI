@@ -32,8 +32,8 @@ root = tx.Tk()
 root.wm_minsize(width=400, height=300)
 root.configure(bg=colors['bg'])
 root.title('inDust modulo')
-# root.overrideredirect(1)
-# root.wm_attributes('-type', 'splash')
+root.config(bd=2)
+root.overrideredirect(1)
 root.wm_resizable(True, True)
 root.iconbitmap('assets/favicon.ico')
 
@@ -152,7 +152,7 @@ class MainWindow:
 
     def top_bar_widgets(self):
         # BUTTON 1 - FILE
-        button_1 = tk.Button(self.top_bar)
+        button_1 = tk.Menubutton(self.top_bar)
 
         button_1.config(bd=0,
                         bg=colors['bg'],
@@ -161,18 +161,31 @@ class MainWindow:
                         text='File',
                         fg=colors['infobox_fb'],
                         font=fonts['menu_normal'],
-                        relief='flat',
-                        command=check_button)
+                        relief='flat')
 
-        # Booton 1 hoover actions
-        def event_enter_b1():
-            Hoover.bg_on_mouse_enter(button_1, colors['infobox_abg'])
+        # Button 1 subbutons
+        button_1.menu = tk.Menu(button_1)
+        button_1["menu"] = button_1.menu
+        button_1.menu.configure(bg=colors['menu_bg'],
+                                bd=0,
+                                activebackground=colors['button_hoover'],
+                                activeforeground=colors['infobox_afb'],
+                                fg=colors['infobox_fb'],
+                                font=fonts['menu_normal'],
+                                relief='flat',
+                                tearoff=0)
 
-        def event_leave_b1():
-            Hoover.bg_on_mouse_leave(button_1, colors['bg'])
-
-        button_1.bind("<Enter>", lambda x: event_enter_b1())
-        button_1.bind("<Leave>", lambda x: event_leave_b1())
+        button_1.menu.add_command(label='New File',
+                                  compound=tk.LEFT, command=check_button,
+                                  accelerator="Ctrl+N", underline=0)
+        button_1.menu.add_separator()
+        button_1.menu.add_command(label='Open File',
+                                  compound=tk.LEFT, command=check_button,
+                                  accelerator="Ctrl+O", underline=0)
+        button_1.menu.add_separator()
+        button_1.menu.add_command(label='Exit',
+                                  compound=tk.LEFT, command=check_button,
+                                  accelerator="Alt+F4", underline=0)
 
         button_1.pack(side='left', padx=6, pady=1)
 
@@ -377,6 +390,9 @@ class MainWindow:
                         command=check_button)
 
         # Booton 1 hoover actions
+        button_1_tipmsg = 'Click for more information about the software.'
+        Hoover.popup_on_mouse_enter(button_1, button_1_tipmsg)
+
         def event_enter_b1():
             Hoover.bg_on_mouse_enter(button_1, colors['infobox_abg'])
 
@@ -418,7 +434,11 @@ class MainWindow:
                         relief='flat',
                         command=check_button)
 
-        # Booton 1 hoover actions
+        # Booton 2 hoover actions
+        button_2_tipmsg = 'Connection to the server status is: ' + \
+            'OFFLINE'+'. Click for action.'
+        Hoover.popup_on_mouse_enter(button_2, button_2_tipmsg)
+
         def event_enter_b2():
             Hoover.bg_on_mouse_enter(button_2, colors['infobox_abg'])
 
@@ -431,7 +451,7 @@ class MainWindow:
         button_2.pack(side='left', padx=3, pady=1)
 
     def left_menu_widgets(self):
-        # BUTTON 1 - SEARCH
+        # BUTTON 1 - ENTRY DATA
         button_1 = tk.Button(self.left_menu)
 
         button_1_load = Image.open('assets/check_50.png')
@@ -448,7 +468,7 @@ class MainWindow:
                         command=check_button)
 
         # Button 1 hoover actions
-        button_1_tipmsg = 'Structure members'
+        button_1_tipmsg = 'Entry data'
         Hoover.popup_on_mouse_enter(button_1, button_1_tipmsg)
 
         def event_enter_b1():
@@ -462,7 +482,7 @@ class MainWindow:
 
         button_1.pack(side='top', pady=4, padx=4)
 
-        # BUTTON 2 - PROFILE
+        # BUTTON 2 - ANALYSIS
         button_2 = tk.Button(self.left_menu)
 
         button_2_load = Image.open('assets/result_50.png')
@@ -603,7 +623,7 @@ class MainWindow:
                          command=check_button)
 
         # Button 00 hoover actions
-        button_00_tipmsg = 'User'
+        button_00_tipmsg = 'User options'
         Hoover.popup_on_mouse_enter(button_00, button_00_tipmsg)
 
         def event_enter_b00():
