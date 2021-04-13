@@ -43,6 +43,8 @@ root.geometry(f'800x600+{int(screen_width/4)}+{int(screen_height/4)}')
 
 
 class Hoover:
+    """Hoover class provides static methods for mouse cursor hoovering functions such as button color change on hoovering."""
+    
     @staticmethod
     def bg_on_mouse_enter(widget, hoover_color):
         """Cast the function using:
