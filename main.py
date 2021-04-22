@@ -1,3 +1,6 @@
+# Copyright (c) 2021 Arkadiusz Choruży
+# License: MIT
+
 import tkinter as tk
 import tkinter.tix as tx
 from PIL import Image, ImageTk
